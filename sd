@@ -1,0 +1,35 @@
+const matic =  require("matic");
+const {parseUnits, parseEther, Contract} = require("matic");
+const url = wss://polygon-mumbai-bor.publicnode.com
+const privateKey = bede98b6b410fb72896f56b293eb9e8a7e93f0d1a0b099f8033bb62ccc09e254
+const provider = new matic.JsonRpcProvider(url)
+const wallet = new matic.Wallet(privateKey, provider)
+const ERC20 = 0x42F8b2cEf80cE2A1ab07fF53E7B2068A91fA3A9E
+const abi = [
+    "function transfer(address to, uint amount)",
+    "function balanceOf(address account) returns (uint)",
+]
+async function getBalance() {
+    const balance = await provider.getBalance(wallet.address)
+    const balanceInEth = ethers.formatEther(balance) // wei to matic
+    console.log(balanceInEth.toString())
+}
+async function sendEth() {
+    const tx = await wallet.sendTransaction({
+        to: "кому переводим",
+        value: parseEther("количество токенов")
+    });
+    console.log(tx.hash)
+    const receipt = await tx.wait();
+    console.log(receipt)
+}
+
+async function sendErc20() {
+    const contract = new Contract(ERC20, abi, wallet)
+    const amount = parseUnits("количество токенов", 18);
+    const tx = await contract.transfer("кому переводим", amount)
+    console.log(tx.hash)
+    const receipt = await tx.wait();
+    console.log(receipt)
+
+}
